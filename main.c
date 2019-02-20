@@ -55,8 +55,9 @@ void show_tetriminos(short tetriminos_nb, char tetriminos[tetriminos_nb][16]) {
 static	bool	check_tetrimino_is_valid(char tetrimino[16])
 {
 	short	i;
-	bool	is_connected;
+	short	links_bn;
 	short	tetrimino_blocks;
+	bool	all_blocks_connected;
 
 	i = 0;
 	tetrimino_blocks = 0;
@@ -64,22 +65,20 @@ static	bool	check_tetrimino_is_valid(char tetrimino[16])
 	{
 		if (tetrimino[i] == '#')
 		{
-			is_connected = false; // reset is_connected to false
-			if (i % 4 != 0) // if not first column
-				is_connected |= (tetrimino[i - 1] == '#');
-			if (i % 4 != 3) // if not last column
-				is_connected |= (tetrimino[i + 1] == '#');
-			if (i / 4 != 0) // if not first row
-				is_connected |= (tetrimino[i - 4] == '#');
-			if (i / 4 != 3) // if not last row
-				is_connected |= (tetrimino[i + 4] == '#');
-			if (is_connected == false)
+			links_nb = 0; // reset links_nb to 0
+			links_nb += (i % 4 != 0 && (tetrimino[i - 1] == '#')) // if not first column
+			links_nb += (i % 4 != 3 && (tetrimino[i + 1] == '#') // if not last column
+			links_nb += (i / 4 != 0 && (tetrimino[i - 4] == '#')) // if not first row
+			links_nb += (i / 4 != 3 && (tetrimino[i + 4] == '#')) // if not last row
+			if (links_nb == 0)
 				return false;
+			if (links_nb > 1) // this condition is to unvalidate if we have two separate blocks like .##. .... .... and .##. further
+				all_blocks_connected = true;
 			++tetrimino_blocks;
 		}
 		++i;
 	}
-	return (tetrimino_blocks == 4); // Tetriminos should contain exactly 4 '#'
+	return (tetrimino_blocks == 4 && all_blocks_connected); // Tetriminos should contain exactly 4 '#'
 }
 
 bool	are_all_tetriminos_valid(short tetriminos_nb, char tetriminos[tetriminos_nb][16]) {
