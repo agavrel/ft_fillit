@@ -52,10 +52,15 @@ void show_tetriminos(short tetriminos_nb, char tetriminos[tetriminos_nb][16]) {
 	}
 }
 
+
+static	void	get_smallest_square(short tetriminos_nb, char tetriminos[tetriminos_nb][16]) {
+		/* algo part */
+}
+
 static	bool	check_tetrimino_is_valid(char tetrimino[16])
 {
 	short	i;
-	short	links_bn;
+	short	links_nb;
 	short	tetrimino_blocks;
 	bool	all_blocks_connected;
 
@@ -66,10 +71,10 @@ static	bool	check_tetrimino_is_valid(char tetrimino[16])
 		if (tetrimino[i] == '#')
 		{
 			links_nb = 0; // reset links_nb to 0
-			links_nb += (i % 4 != 0 && (tetrimino[i - 1] == '#')) // if not first column
-			links_nb += (i % 4 != 3 && (tetrimino[i + 1] == '#') // if not last column
-			links_nb += (i / 4 != 0 && (tetrimino[i - 4] == '#')) // if not first row
-			links_nb += (i / 4 != 3 && (tetrimino[i + 4] == '#')) // if not last row
+			links_nb += (i % 4 != 0 && (tetrimino[i - 1] == '#')); // if not first column
+			links_nb += (i % 4 != 3 && (tetrimino[i + 1] == '#')); // if not last column
+			links_nb += (i / 4 != 0 && (tetrimino[i - 4] == '#')); // if not first row
+			links_nb += (i / 4 != 3 && (tetrimino[i + 4] == '#')); // if not last row
 			if (links_nb == 0)
 				return false;
 			if (links_nb > 1) // this condition is to unvalidate if we have two separate blocks like .##. .... .... and .##. further
@@ -110,8 +115,7 @@ void transform_input_into_tetriminos(short tetriminos_nb, char *str) {
 		while (i < 20)
 		{
 			while (i % 5 < 4) // 4 first characters are not '\n'
-			{
-				c = ; // str[0] then str[21] etc for very first character of each tetri
+			{// str[0] then str[21] etc for very first character of each tetri
 				if (str[i + input_block] != '#' && str[i + input_block] != '.') // these 4 first characters should be '#' or '.'
 					display_error("Invalid character in Tetriminos\n", 2);
 				++i;
@@ -124,9 +128,11 @@ void transform_input_into_tetriminos(short tetriminos_nb, char *str) {
 			display_error("Missing Line Break at the end of Tetrimino\n", 2);
 
 	}
-	show_tetriminos(tetriminos_nb, tetriminos);
-	bool check = are_all_tetriminos_valid(tetriminos_nb, tetriminos);
-	printf("valid ? %d\n", check);
+	show_tetriminos(tetriminos_nb, tetriminos); // optional, for debug purpose
+	if (are_all_tetriminos_valid(tetriminos_nb, tetriminos) == true)
+		get_smallest_square(tetriminos_nb, tetriminos);
+	else
+		display_error("Some tetriminos are invalid\n", 2);
 }
 
 int main(int argc, char **argv)
